@@ -38,8 +38,6 @@ void loop() {
     if (digitalRead(buttonPin) == HIGH) {
       // Button is pressed, send 'S' to indicate game start
       Serial.println('S');
-      // You can add a delay to avoid sending 'S' multiple times while the button is held down
-      // Adjust the delay time as needed
       
     }
   }
