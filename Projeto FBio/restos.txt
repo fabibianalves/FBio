@@ -1,0 +1,21 @@
+score_surface = pygame.Surface((180,10))
+score_surface.fill('green')
+score_rect = score_surface.get_rect(topleft = (20,10))
+
+score2_surface = pygame.Surface((180,10))
+score2_surface.fill('green')
+score2_rect = score2_surface.get_rect(topleft = (600,10))
+
+score3_surface = pygame.Surface((180,10))
+score3_surface.fill('green')
+score3_rect = score3_surface.get_rect(topleft = (20,30))
+
+score4_surface = pygame.Surface((180,10))
+score4_surface.fill('green')
+score4_rect = score_surface.get_rect(topleft = (600,30))
+
+
+        #screen.blit(score_surface,score_rect)
+        #screen.blit(score2_surface,score2_rect)
+        #screen.blit(score3_surface,score3_rect)
+        #screen.blit(score4_surface,score4_rect)
