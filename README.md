@@ -1,6 +1,6 @@
 # FBio
 
-FBio_pygame - O jogo funciona carregando no butao espaço
+FBio_pygame - O jogo funciona carregando no botão espaço
 
 v2 - lê ecg ligado ao arduino e joga quando o valor é maior do que threshold
 
