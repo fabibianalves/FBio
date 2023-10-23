@@ -1,0 +1,198 @@
+import pygame
+import pygame.mask
+from sys import exit
+from random import randint
+
+
+pygame.init()
+screen = pygame.display.set_mode((800,400)) #(largura, altura)
+pygame.display.set_caption('Jetpack Trip') #nome do jogo
+clock = pygame.time.Clock()
+test_font = pygame.font.SysFont('Comic Sans Ms', 27)
+game_active = True
+
+score = 0
+
+
+#-----------Game aspect------------------------
+
+sky_surface = pygame.image.load ('C:/Users/fabib/ImagensGame/background.jpg').convert_alpha()
+sky_surface= pygame.transform.scale(sky_surface, (800,400))
+#sky_surface.fill('cadetblue1')
+
+#ground_surface = pygame.Surface((800,50))
+#ground_surface.fill('chocolate4')
+
+#ceiling_surface = pygame.Surface((800,50))
+#ceiling_surface.fill('gray')
+
+#grass_surface = pygame.Surface((800,10))
+#grass_surface.fill('chartreuse3')
+
+text_surface = test_font.render('Jetpack Trip', True, 'White', None)
+ 
+
+score_surface = test_font.render(str(score), True, 'White', None)
+
+#score_background_color=(255,255,255)
+#score_surface.fill(score_background_color)
+
+#-------------Enemys----------------------------
+
+enemy_surface = pygame.image.load('C:/Users/fabib/ImagensGame/box.png').convert_alpha()
+enemy_rect = enemy_surface.get_rect(topleft = (1200,300))
+new_width_enemy=52
+new_height_enemy=50
+enemy_surface=pygame.transform.scale(enemy_surface, (new_width_enemy,new_height_enemy))
+
+enemy2_surface = pygame.image.load('C:/Users/fabib/ImagensGame/box.png').convert_alpha()
+#enemy2_surface = pygame.image.load('C:\\Users\\Maria (escola)\\Documents\\Python\\Projeto FBio\\Imagens\\saw-blade.png').convert()
+enemy2_rect = enemy2_surface.get_rect(topleft = (800,200))
+down2 = True
+new_width_enemy2=52
+new_height_enemy2=50
+enemy2_surface=pygame.transform.scale(enemy2_surface, (new_width_enemy2,new_height_enemy2))
+
+
+enemy3_surface = pygame.image.load('C:/Users/fabib/ImagensGame/box.png').convert_alpha()
+enemy3_rect = enemy3_surface.get_rect(topleft = (1800,150))
+new_width_enemy3=52
+new_height_enemy3=50
+enemy3_surface=pygame.transform.scale(enemy3_surface, (new_width_enemy3,new_height_enemy3))
+
+
+#-------------Coins----------------------------
+coin_surface = pygame.image.load('C:/Users/fabib/ImagensGame/Moeda-removebg-preview.png').convert_alpha()
+coin_surface.set_colorkey((0,0,0))
+#coin_surface.fill('chartreuse3')
+coin_rect = coin_surface.get_rect(topleft = (1000, 200))
+nova_largura= 35
+nova_altura=35
+coin_surface=pygame.transform.scale(coin_surface, (nova_largura,nova_largura))
+
+#-------------Players--------------------------
+
+player_surface = pygame.image.load('C:/Users/fabib/ImagensGame/jetpack_pinguim.png').convert_alpha()
+player_surface.set_colorkey((0,0,0))
+new_width_player= 87
+new_height_player=85
+player_surface= pygame.transform.scale(player_surface,(new_width_player,new_height_player))
+#player_surface.fill('lightgoldenrod1')
+player_rect = player_surface.get_rect(topleft = (20, 270))
+
+jetpack_active = False
+player_velocity = 0
+score = 0
+
+#-------Mascaras de colisão ----------
+player_mask = pygame.mask.from_surface(player_surface)
+enemy_mask = pygame.mask.from_surface(enemy_surface)
+enemy2_mask = pygame.mask.from_surface(enemy2_surface)
+enemy3_mask = pygame.mask.from_surface(enemy3_surface)
+coin_mask = pygame.mask.from_surface(coin_surface)
+
+
+
+while True:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            pygame.quit()
+            exit()
+        
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_SPACE:
+                jetpack_active = True
+
+        if event.type == pygame.KEYUP:
+            if event.key == pygame.K_SPACE:
+                jetpack_active = False
+            
+
+    if game_active:
+        screen.blit(sky_surface,(0,50))
+        #screen.blit(ground_surface,(0,350))
+        #screen.blit(ceiling_surface,(0,0))
+        #screen.blit(grass_surface,(0,350))
+        screen.blit(text_surface,(300,10))
+        score_surface = test_font.render(str(score), True, 'White', None)
+        screen.blit(score_surface,(100,10))
+        
+
+        enemy_rect.x -= 3
+        if enemy_rect.right <= 0:
+            enemy_rect.left = 1000
+        screen.blit(enemy_surface,enemy_rect)
+
+        enemy2_rect.x -= 3
+        if enemy2_rect.x < -100:
+            enemy2_rect.x = 1200
+        if enemy2_rect.y >= 300:
+            down2 = False
+        if enemy2_rect.y <= 100:
+            down2 = True
+        if down2:
+            enemy2_rect.y += 1
+        else:
+            enemy2_rect.y -= 1
+        screen.blit(enemy2_surface,enemy2_rect)
+
+        enemy3_rect.x -= 3
+        if enemy3_rect.right <= 0:
+            enemy3_rect.left = 2000
+        screen.blit(enemy3_surface,enemy3_rect)
+
+        coin_rect.x -= 3
+        if coin_rect.right <= 0:
+                coin_rect.x = 1000
+        screen.blit(coin_surface, coin_rect)
+
+
+
+        if jetpack_active:
+            player_velocity = -3
+        else:
+            player_velocity += 0.5
+
+        player_rect.y += player_velocity
+
+        if player_rect.bottom >= 400:
+            player_rect.bottom = 400
+        if player_rect.top <= 50:
+            player_rect.top = 50
+
+        screen.blit(player_surface,(player_rect))
+
+        if coin_mask.overlap(player_mask, (coin_rect.x - player_rect.x, coin_rect.y - player_rect.y)):
+            score += 1
+            #score_surface = test_font.render(str(score), False, 'Black')
+            coin_rect.x = 1000
+            if score == 25:
+                game_active = False
+       
+        if (player_mask.overlap(enemy_mask, (player_rect.x - enemy_rect.x, player_rect.y - enemy_rect.y)) or
+        player_mask.overlap(enemy2_mask, (player_rect.x - enemy2_rect.x, player_rect.y - enemy2_rect.y)) or
+        player_mask.overlap(enemy3_mask, (player_rect.x - enemy3_rect.x, player_rect.y - enemy3_rect.y))):
+            game_active = False
+            print('Game Over')
+
+        #if enemy_rect.colliderect(player_rect) or enemy2_rect.colliderect(player_rect) or enemy3_rect.colliderect(player_rect):
+           # game_active = False
+            #if enemy_rect.colliderect(player_rect):
+             #   print('Foi o 1')
+            #if enemy2_rect.colliderect(player_rect):
+             #   print('Foi o 2')
+            #if enemy3_rect.colliderect(player_rect):
+             #   print ('Foi o 3')
+            
+    else:
+        screen.fill('cornsilk3')
+        if score < 25:
+            score_surface = test_font.render(str(score), False, 'Black')
+        else:
+            score_surface = test_font.render('WINNER!', False, 'Black')
+        screen.blit(score_surface,(350,150))
+        #fazer aqui pontuações de 4 jogadores
+
+
+    pygame.display.update()
+    clock.tick(60)
